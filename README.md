@@ -7,7 +7,32 @@
 
 # Handwritten Text Recognition (HTR) Model
 
-This repository contains a Handwritten Text Recognition model implementation that supports both CUDA and Apple Silicon (MPS) devices.
+This repository contains a Handwritten Text Recognition model implementation that supports both CUDA and Apple Silicon (MPS) devices. The model is specifically designed to handle noisy handwritten text, making it suitable for real-world applications like bank check processing.
+
+## Features
+
+- Supports both CUDA and Apple Silicon (MPS) devices
+- Handles noisy handwritten text with:
+  - Background variations
+  - Horizontal lines
+  - Smudges
+  - Salt and pepper noise
+- Trained on combined IAM and RIMES datasets
+- No pre-processing required for inference
+
+## Sample Images
+
+### Training Data with Noise
+Here are some examples of our training data with artificially added noise to simulate real-world conditions:
+
+![Sample 1](img/sample1.png)
+*Sample 1: Handwritten text with horizontal lines and background noise*
+
+![Sample 2](img/sample2.png)
+*Sample 2: French text sample with dotted line background - demonstrates model's ability to handle different writing styles and line patterns*
+
+### Model Output
+The model processes these noisy inputs and produces clean text output. Output images can be found in the `output/predictions/` directory after running inference.
 
 ## Requirements
 
@@ -47,6 +72,26 @@ The model will process the images and save the predictions with visualizations i
 - For Apple Silicon (M1/M2) Macs, the model uses MPS (Metal Performance Shaders) backend with CPU fallback for certain operations
 - Prediction images are saved in the `output/predictions/` directory
 - The model includes spell-checking for improved accuracy
+- No pre-processing required for noisy images
+
+## Dataset Information
+
+The model is trained on a combination of:
+1. IAM Dataset (English)
+   - 13,350 line-level samples
+   - 657 different writers
+2. RIMES Dataset (French characters)
+   - Additional line-level samples
+   - Over 1,300 participants
+
+### Data Augmentation
+To make the model robust for real-world applications, we augment the training data with:
+- Horizontal lines (simulating check fields)
+- Various backgrounds
+- Smudges
+- Salt and pepper noise
+
+The training uses a 50:50 ratio of clean and noisy images to ensure the model learns both clean character structure and noise handling.
 
 ### Introduction
 This is the official implementation of our **Pattern Recognition(PR)** 2024 paper *"HTR-VT: Handwritten Text Recognition with Vision Transformer".* It's a new and effective baseline for handwritten text recognition solely using Vision Transformer and CTC Loss. 
