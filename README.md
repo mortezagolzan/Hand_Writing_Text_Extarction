@@ -92,10 +92,6 @@ python test.py --out-dir ./output --exp-name iam IAM --test-data-list ./Test_Dat
 - Post-processing with Symspell significantly improves Character Error Rate (CER) and Word Error Rate (WER)
 - No pre-processing required for noisy images
 
-## Acknowledgements
-
-This work builds upon the [HTR-VT project](https://github.com/YutingLi0606/HTR-VT) by Yuting Li et al. We extend our gratitude to the original authors for their foundational work in handwritten text recognition using Vision Transformers.
-
 ## Dataset Information
 
 The model is trained on a combination of:
@@ -115,3 +111,9 @@ To make the model robust for real-world applications, we augment the training da
 
 The training uses a 50:50 ratio of clean and noisy images to ensure the model learns both clean character structure and noise handling.
 
+
+
+
+## Acknowledgements
+
+This work builds upon the [HTR-VT project](https://github.com/YutingLi0606/HTR-VT) by Yuting Li et al. We extend our gratitude to the original authors for their foundational work in handwritten text recognition using Vision Transformers.
