@@ -53,6 +53,13 @@ Here are examples of our noisy training data that simulate real-world conditions
 ### Model Output
 The model processes these noisy inputs and produces clean text output, which is then enhanced through Symspell post-processing. Output images can be found in the `output/predictions/` directory after running inference.
 
+## Evaluation Results
+The model achieves strong performance on test data even before post-processing:
+- Character Error Rate (CER): 6.5%
+- Word Error Rate (WER): 16.7%
+
+These metrics are further improved after applying Symspell post-processing, particularly for numeric text in check amounts.
+
 ## Requirements
 
 - Python 3.x
@@ -110,9 +117,6 @@ To make the model robust for real-world applications, we augment the training da
 - Salt and pepper noise
 
 The training uses a 50:50 ratio of clean and noisy images to ensure the model learns both clean character structure and noise handling.
-
-
-
 
 ## Acknowledgements
 
