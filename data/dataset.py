@@ -66,6 +66,35 @@ class myLoadDS(Dataset):
         timgs = timgs.transpose((2, 0, 1))
 
         return (timgs, self.tlbls[index])
+        
+class myLoadDS_Test(Dataset):
+    def __init__(self, flist, dpath, img_size=[512, 32], ralph=None, fmin=True, mln=None):
+        #self.fns = get_files(flist, dpath)
+        self.fns = [dpath+"/"+file for file in os.listdir(dpath) if file.lower().endswith('.png') or file.lower().endswith('.jpg') or file.lower().endswith('.jpeg')]
+        #self.tlbls = get_labels(self.fns)
+        self.img_size = img_size
+
+        if ralph == None:
+            alph = get_alphabet(self.tlbls)
+            self.ralph = dict(zip(alph.values(), alph.keys()))
+            self.alph = alph
+        else:
+            self.ralph = ralph
+
+        #if mln != None:
+        #    filt = [len(x) <= mln if fmin else len(x) >= mln for x in self.tlbls]
+        #    self.tlbls = np.asarray(self.tlbls)[filt].tolist()
+        #    self.fns = np.asarray(self.fns)[filt].tolist()
+
+    def __len__(self):
+        return len(self.fns)
+
+    def __getitem__(self, index):
+        timgs = get_images(self.fns[index], self.img_size[0], self.img_size[1])
+        timgs = timgs.transpose((2, 0, 1))
+        return (timgs, "")
+
+        #return (timgs, self.tlbls[index])
 
 
 def get_files(nfile, dpath):

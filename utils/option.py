@@ -60,6 +60,7 @@ def get_args_parser():
     parser.add_argument('--zoom-min-w', default=0.99, type=float)
     parser.add_argument('--zoom-max-w', default=1, type=float)
     parser.add_argument('--proba', default=0.5, type=float)
+    parser.add_argument('--show-images', default=None, help="Show images during inference")
 
     parser.add_argument('--ema-decay', default=0.9999, type=float, help='Exponential Moving Average (EMA) decay')
     parser.add_argument('--alpha', default=0, type=float, help='kld loss ratio')

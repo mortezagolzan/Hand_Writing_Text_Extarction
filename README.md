@@ -42,12 +42,15 @@ The spell-checker includes commonly used terms in bank checks:
 Here are examples of our noisy training data that simulate real-world conditions:
 
 ![Sample 1](img/Picture1.png)
+
 *Sample 1: Handwritten text with horizontal lines and background noise*
 
 ![Sample 2](img/Picture2.png)
+
 *Sample 2: French text sample with dotted line background - demonstrates model's ability to handle different writing styles and line patterns*
 
 ![Sample 3](img/Picture3.png)
+
 *Sample 3: Another example of French text with dotted line patterns - showing consistency in handling structured backgrounds*
 
 ### Model Output

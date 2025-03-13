@@ -39,13 +39,19 @@ def main():
     writer = SummaryWriter(args.save_dir)
 
     model = HTR_VT.create_model(nb_cls=args.nb_cls, img_size=args.img_size[::-1])
-
+    #Addition
+    existing_checkpoint = torch.load(os.path.join(args.save_dir, 'best_CER.pth'), weights_only=False)
+    model.load_state_dict(existing_checkpoint["model"])
+    #####
     total_param = sum(p.numel() for p in model.parameters())
     logger.info('total_param is {}'.format(total_param))
 
+    
     model.train()
     model = model.cuda()
     model_ema = utils.ModelEma(model, args.ema_decay)
+    model_ema._load_checkpoint(os.path.join(args.save_dir, 'best_CER.pth'))
+    # model_ema.ema.load_state_dict(existing_checkpoint["state_dict_ema"])
     model.zero_grad()
 
     logger.info('Loading train loader...')
@@ -67,15 +73,19 @@ def main():
                                              num_workers=args.num_workers)
 
     optimizer = sam.SAM(model.parameters(), torch.optim.AdamW, lr=1e-7, betas=(0.9, 0.99), weight_decay=args.weight_decay)
+    optimizer.load_state_dict(existing_checkpoint["optimizer"])
     criterion = torch.nn.CTCLoss(reduction='none', zero_infinity=True)
     converter = utils.CTCLabelConverter(train_dataset.ralph.values())
 
-    best_cer, best_wer = 1e+6, 1e+6
+    # best_cer, best_wer = 1e+6, 1e+6
+    # train_loss = 0.0
+
+    best_cer, best_wer = 0.075, 0.165
     train_loss = 0.0
 
     #### ---- train & eval ---- ####
 
-    for nb_iter in range(1, args.total_iter):
+    for nb_iter in range(0, args.total_iter):
 
         optimizer, current_lr = utils.update_lr_cos(nb_iter, args.warm_up_iter, args.total_iter, args.max_lr, optimizer)
 
