@@ -1,14 +1,18 @@
 import torch
 import torch.utils.data
 import torch.backends.cudnn as cudnn
+import os
 
 from utils import utils
 import editdistance
+from symspellpy import SymSpell
+import matplotlib.pyplot as plt
 
 
-def validation(model, criterion, evaluation_loader, converter):
+def validation(model, criterion, evaluation_loader, converter, show_images):
     """ validation or evaluation """
 
+    device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
     norm_ED = 0
     norm_ED_wer = 0
 
@@ -21,10 +25,19 @@ def validation(model, criterion, evaluation_loader, converter):
     count = 0
     all_preds_str = []
     all_labels = []
+    
+    # Create output directory for images
+    output_dir = "output/predictions"
+    os.makedirs(output_dir, exist_ok=True)
+    
+    # Spell check Initialization
+    sym_spell = SymSpell(max_dictionary_edit_distance=6)
+    sym_spell.load_dictionary("Amount_Dictionary.txt", term_index=0, count_index=1)
+    # Spell check
 
     for i, (image_tensors, labels) in enumerate(evaluation_loader):
         batch_size = image_tensors.size(0)
-        image = image_tensors.cuda()
+        image = image_tensors.to(device)
 
         text_for_loss, length_for_loss = converter.encode(labels)
 
@@ -42,10 +55,36 @@ def validation(model, criterion, evaluation_loader, converter):
         preds_str = converter.decode(preds_index.data, preds_size.data)
         valid_loss += cost.item()
         count += 1
+        
+        for idx, (pred, curr_img) in enumerate(zip(preds_str, image)):
+            suggestions = sym_spell.lookup_compound(pred, max_edit_distance=6)
+            for suggestion in suggestions:
+                corrected_suggestion = suggestion.term
+            if show_images=='True':
+                plt.figure(figsize=(15, 3))
+                plt.imshow(curr_img.cpu().permute(1, 2, 0).numpy(), cmap='gray')
+                plt.title(f"Model output: {pred}\nSpell checked: {corrected_suggestion}")
+                plt.axis('off')
+                plt.savefig(os.path.join(output_dir, f'prediction_{i}_{idx}.png'), bbox_inches='tight', dpi=300)
+                plt.close()
+            else:
+                print("Model output: "+ pred+ " \n Spell checked: "+ corrected_suggestion)
+                
+        #print(preds_str)
 
         all_preds_str.extend(preds_str)
         all_labels.extend(labels)
+        
+    CER = 0.0
+    WER = 0.0
+    val_loss = 0.0
+    
+    if show_images=='True':
+        print(f"\nPrediction images have been saved to {output_dir}/")
+        
+    return val_loss, CER, WER, preds_str, labels
 
+'''
         for pred_cer, gt_cer in zip(preds_str, labels):
             tmp_ED = editdistance.eval(pred_cer, gt_cer)
             if len(gt_cer) == 0:
@@ -75,3 +114,4 @@ def validation(model, criterion, evaluation_loader, converter):
     WER = tot_ED_wer / float(length_of_gt_wer)
 
     return val_loss, CER, WER, preds_str, labels
+'''

@@ -4,6 +4,50 @@
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/htr-vt-handwritten-text-recognition-with/handwritten-text-recognition-on-read2016-line)](https://paperswithcode.com/sota/handwritten-text-recognition-on-read2016-line?p=htr-vt-handwritten-text-recognition-with)
 
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/htr-vt-handwritten-text-recognition-with/handwritten-text-recognition-on-iam-line)](https://paperswithcode.com/sota/handwritten-text-recognition-on-iam-line?p=htr-vt-handwritten-text-recognition-with)
+
+# Handwritten Text Recognition (HTR) Model
+
+This repository contains a Handwritten Text Recognition model implementation that supports both CUDA and Apple Silicon (MPS) devices.
+
+## Requirements
+
+- Python 3.x
+- PyTorch
+- Other dependencies listed in requirements.txt
+
+## Setup
+
+1. Create a virtual environment:
+```bash
+python -m venv venv
+source venv/bin/activate  # On Unix/macOS
+```
+
+2. Install dependencies:
+```bash
+pip install -r requirements.txt
+```
+
+## Usage
+
+### Testing the Model
+
+To run inference on test images:
+
+```bash
+# For Apple Silicon Macs (M1/M2)
+export PYTORCH_ENABLE_MPS_FALLBACK=1
+python test.py --out-dir ./output --exp-name iam IAM --test-data-list ./Test_Data/ --show-images True
+```
+
+The model will process the images and save the predictions with visualizations in `output/predictions/`.
+
+## Notes
+
+- For Apple Silicon (M1/M2) Macs, the model uses MPS (Metal Performance Shaders) backend with CPU fallback for certain operations
+- Prediction images are saved in the `output/predictions/` directory
+- The model includes spell-checking for improved accuracy
+
 ### Introduction
 This is the official implementation of our **Pattern Recognition(PR)** 2024 paper *"HTR-VT: Handwritten Text Recognition with Vision Transformer".* It's a new and effective baseline for handwritten text recognition solely using Vision Transformer and CTC Loss. 
 
